@@ -1,11 +1,23 @@
-# Prerequisites
+# Build directories
+build/
+out/
+bin/
+Debug/
+Release/
+x64/
+x86/
+
+# Prerequisites and dependencies
 *.d
+deps/
+vcpkg/
 
 # Compiled Object files
 *.slo
 *.lo
 *.o
 *.obj
+*.ko
 
 # Precompiled Headers
 *.gch
@@ -25,8 +37,47 @@
 *.la
 *.a
 *.lib
+*.lo
 
 # Executables
 *.exe
 *.out
 *.app
+
+# IDE specific files
+.vs/
+.vscode/
+*.swp
+*.swo
+.idea/
+*.sublime-workspace
+*.sublime-project
+
+# OS specific files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# CMake files
+CMakeCache.txt
+CMakeFiles/
+cmake-build-*/
+*.cmake
+!CMakeLists.txt
+
+# Dependency management
+conan.lock
+conanbuildinfo.*
+conaninfo.txt
+graph_info.json
+
+# Testing
+Testing/
+*.gcno
+*.gcda
+*.gcov
+
