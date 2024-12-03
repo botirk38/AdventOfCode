@@ -1,6 +1,4 @@
 #include "day01.h"
-#include <cstdio>
-#include <cstdlib>
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -84,4 +82,3 @@ void day01_part2(void) {
   free(right);
   free(freq);
 }
-
