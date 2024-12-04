@@ -9,4 +9,5 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 include_directories(${PROJECT_SOURCE_DIR}/include)
 
 # Add executable
-add_executable(aoc2024 src/main.cpp src/day01.c src/day02.cpp src/day03.c)
+add_executable(aoc2024 src/main.cpp src/day01.c src/day02.cpp src/day03.c
+                       src/day04.cpp)
