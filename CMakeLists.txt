@@ -10,4 +10,4 @@ include_directories(${PROJECT_SOURCE_DIR}/include)
 
 # Add executable
 add_executable(aoc2024 src/main.cpp src/day01.c src/day02.cpp src/day03.c
-                       src/day04.cpp)
+                       src/day04.cpp src/day05.cpp)

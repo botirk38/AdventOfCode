@@ -3,139 +3,126 @@
 #include <iostream>
 #include <string>
 #include <vector>
-#include <array>
 
 static const std::string FILE_NAME = "../inputs/day04.txt";
 
-// Grid position structure
-struct Position {
-    int x, y;
-    Position(int x_, int y_) : x(x_), y(y_) {}
-};
+std::vector<std::string> read_words(const std::string &fileName) {
+  std::ifstream file(fileName);
+  std::vector<std::string> words;
 
-// Direction vectors for 8 possible directions
-static const std::array<Position, 8> DIRECTIONS = {{
-    {-1, -1}, {-1, 0}, {-1, 1},
-    {0, -1},  {0, 1},
-    {1, -1},  {1, 0},  {1, 1}
-}};
+  if (!file.is_open()) {
+    return words;
+  }
 
-// X-MAS pattern structure
-struct XMASPattern {
-    std::string diagonal1;
-    std::string diagonal2;
-    XMASPattern(const std::string& d1, const std::string& d2) 
-        : diagonal1(d1), diagonal2(d2) {}
-};
-
-// Valid X-MAS patterns
-static const std::array<XMASPattern, 4> VALID_PATTERNS = {{
-    {"MAS", "MAS"},
-    {"MAS", "SAM"},
-    {"SAM", "MAS"},
-    {"SAM", "SAM"}
-}};
-
-class WordGrid {
-private:
-    std::vector<std::string> grid;
-    int rows;
-    int cols;
-
-    bool isValidPosition(const Position& pos) const {
-        return pos.x >= 0 && pos.x < rows && 
-               pos.y >= 0 && pos.y < cols;
+  std::string line;
+  while (std::getline(file, line)) {
+    if (!line.empty()) {
+      words.push_back(line);
     }
+  }
 
-    std::string getWord(Position start, const Position& direction, int length) const {
-        std::string word;
-        for (int i = 0; i < length && isValidPosition(start); i++) {
-            word += grid[start.x][start.y];
-            start.x += direction.x;
-            start.y += direction.y;
+  file.close();
+  return words;
+}
+
+int countXmas(const std::vector<std::string> &grid) {
+  if (grid.empty()) {
+    return 0;
+  }
+
+  int rows = grid.size();
+  int cols = grid[0].size();
+  const int dx[] = {-1, -1, -1, 0, 0, 1, 1, 1};
+  const int dy[] = {-1, 0, 1, -1, 1, -1, 0, 1};
+  int count = 0;
+
+  auto isValidEntry = [&](int x, int y) {
+    return x >= 0 && x < rows && y >= 0 && y < cols;
+  };
+
+  for (int i = 0; i < rows; i++) {
+    for (int j = 0; j < cols; j++) {
+      if (grid[i][j] == 'X') {
+        for (int dir = 0; dir < 8; dir++) {
+          int x = i;
+          int y = j;
+          std::string word;
+
+          for (int len = 0; len < 4; len++) {
+            if (!isValidEntry(x, y))
+              break;
+            word += grid[x][y];
+            x += dx[dir];
+            y += dy[dir];
+          }
+
+          if (word == "XMAS") {
+            count++;
+          }
         }
-        return word;
+      }
     }
+  }
+  return count;
+}
 
-    bool checkXPattern(const Position& center, const XMASPattern& pattern) const {
-        // Check top-left to bottom-right
-        Position topLeft(center.x - 1, center.y - 1);
-        Position bottomRight(center.x + 1, center.y + 1);
-        if (!isValidPosition(topLeft) || !isValidPosition(bottomRight)) return false;
+int countXmasPart2(const std::vector<std::string> &grid) {
+  if (grid.empty()) {
+    return 0;
+  }
 
-        // Check top-right to bottom-left
-        Position topRight(center.x - 1, center.y + 1);
-        Position bottomLeft(center.x + 1, center.y - 1);
-        if (!isValidPosition(topRight) || !isValidPosition(bottomLeft)) return false;
+  int rows = grid.size();
+  int cols = grid[0].size();
+  int count = 0;
 
-        std::string diag1 = std::string({
-            grid[topLeft.x][topLeft.y],
-            grid[center.x][center.y],
-            grid[bottomRight.x][bottomRight.y]
-        });
+  auto isValidEntry = [&](int x, int y) {
+    return x >= 0 && x < rows && y >= 0 && y < cols;
+  };
 
-        std::string diag2 = std::string({
-            grid[topRight.x][topRight.y],
-            grid[center.x][center.y],
-            grid[bottomLeft.x][bottomLeft.y]
-        });
+  for (int i = 0; i < rows; i++) {
+    for (int j = 0; j < cols; j++) {
+      if (grid[i][j] == 'A') {
 
-        return diag1 == pattern.diagonal1 && diag2 == pattern.diagonal2;
-    }
+        const std::vector<std::pair<std::string, std::string>> validCombos = {
+            {"MAS", "MAS"}, {"MAS", "SAM"}, {"SAM", "MAS"}, {"SAM", "SAM"}};
 
-public:
-    WordGrid(const std::string& fileName) {
-        std::ifstream file(fileName);
-        std::string line;
-        while (std::getline(file, line)) {
-            if (!line.empty()) {
-                grid.push_back(line);
-            }
+        for (const auto &[pattern1, pattern2] : validCombos) {
+          bool match = true;
+
+          // Check first diagonal (top-left to bottom-right)
+          if (!(isValidEntry(i - 1, j - 1) && isValidEntry(i + 1, j + 1)))
+            continue;
+          if (grid[i - 1][j - 1] != pattern1[0] || grid[i][j] != pattern1[1] ||
+              grid[i + 1][j + 1] != pattern1[2])
+            continue;
+
+          // Check second diagonal (top-right to bottom-left)
+          if (!(isValidEntry(i - 1, j + 1) && isValidEntry(i + 1, j - 1)))
+            continue;
+          if (grid[i - 1][j + 1] != pattern2[0] || grid[i][j] != pattern2[1] ||
+              grid[i + 1][j - 1] != pattern2[2])
+            continue;
+
+          count++;
         }
-        rows = grid.size();
-        cols = rows > 0 ? grid[0].size() : 0;
+      }
     }
+  }
 
-    int countXMAS() const {
-        int count = 0;
-        for (int i = 0; i < rows; i++) {
-            for (int j = 0; j < cols; j++) {
-                if (grid[i][j] == 'X') {
-                    for (const auto& dir : DIRECTIONS) {
-                        if (getWord({i, j}, dir, 4) == "XMAS") {
-                            count++;
-                        }
-                    }
-                }
-            }
-        }
-        return count;
-    }
-
-    int countXMASPart2() const {
-        int count = 0;
-        for (int i = 0; i < rows; i++) {
-            for (int j = 0; j < cols; j++) {
-                if (grid[i][j] == 'A') {
-                    for (const auto& pattern : VALID_PATTERNS) {
-                        if (checkXPattern({i, j}, pattern)) {
-                            count++;
-                        }
-                    }
-                }
-            }
-        }
-        return count;
-    }
-};
+  return count;
+}
 
 void day04_part1() {
-    WordGrid grid(FILE_NAME);
-    std::cout << "Number of occurrences: " << grid.countXMAS() << std::endl;
+  std::vector<std::string> grid = read_words(FILE_NAME);
+  int number_of_xmas_occurrences = countXmas(grid);
+  std::cout << "Number of occurrences: " << number_of_xmas_occurrences
+            << std::endl;
 }
 
 void day04_part2() {
-    WordGrid grid(FILE_NAME);
-    std::cout << "Number of X-MAS occurrences: " << grid.countXMASPart2() << std::endl;
+  std::vector<std::string> grid = read_words(FILE_NAME);
+  int number_of_xmas_occurrences = countXmasPart2(grid);
+  std::cout << "Number of occurrences: " << number_of_xmas_occurrences
+            << std::endl;
 }
 
