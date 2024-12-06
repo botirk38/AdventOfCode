@@ -222,7 +222,7 @@ void day06_part1() {
   free_lab(&lab);
 }
 
-static bool detect_loop(Lab *lab, int max_steps) {
+static bool detect_loop(Lab *lab) {
   typedef struct {
     bool up, right, down, left;
   } DirectionState;
@@ -315,7 +315,7 @@ static bool test_obstacle_position(Lab *lab, int x, int y) {
   lab->map[y][x] = '#';
 
   // Test for loop
-  bool creates_loop = detect_loop(lab, 10000);
+  bool creates_loop = detect_loop(lab);
 
   // Restore original state
   lab->map[y][x] = original;
