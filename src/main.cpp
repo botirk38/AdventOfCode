@@ -3,6 +3,7 @@
 #include "day03.h"
 #include "day04.h"
 #include "day05.h"
+#include "day06.h"
 #include <iostream>
 
 int main(int argc, char *argv[]) {
@@ -36,6 +37,11 @@ int main(int argc, char *argv[]) {
   case 5:
     day05_part1();
     day05_part2();
+    break;
+
+  case 6:
+    day06_part1();
+    day06_part2();
     break;
   default:
     std::cout << "Day " << day << " not implemented yet!" << std::endl;
