@@ -41,6 +41,7 @@ add_executable(
   src/day06.c
   src/day07.c
   src/day08.cpp
-  src/day09.c)
+  src/day09.c
+  src/day10.cpp)
 
 target_link_libraries(aoc2024 PRIVATE OpenMP::OpenMP_CXX)
