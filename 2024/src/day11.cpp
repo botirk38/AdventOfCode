@@ -2,6 +2,7 @@
 #include <fstream>
 #include <iostream>
 #include <unordered_map>
+#include <utility>
 #include <vector>
 
 static constexpr const char *FILE_NAME = "../inputs/day11.txt";
@@ -34,7 +35,8 @@ static long long process_blinks(long long stone, int blinks, Cache &memory) {
     return 1;
   }
 
-  auto key = std::make_pair(stone, blinks);
+  std::pair<long long, int> key = std::make_pair(stone, blinks);
+
   if (auto it = memory.find(key); it != memory.end()) {
     return it->second;
   }
@@ -60,7 +62,7 @@ static long long process_blinks(long long stone, int blinks, Cache &memory) {
 }
 
 void day11_part1(void) {
-  auto numbers = read_input_file(FILE_NAME);
+  std::vector<long long> numbers = read_input_file(FILE_NAME);
   Cache memory;
   long long total = 0;
   for (auto stone : numbers) {
@@ -70,7 +72,7 @@ void day11_part1(void) {
 }
 
 void day11_part2(void) {
-  auto numbers = read_input_file(FILE_NAME);
+  std::vector<long long> numbers = read_input_file(FILE_NAME);
   Cache memory;
   long long total = 0;
   for (auto stone : numbers) {
